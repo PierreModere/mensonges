@@ -16,7 +16,6 @@
           "config": {
             "label": "Lien Youtube",
             "placeholder": "",
-            "allowTargetBlank": false,
             "select": null
           }
         },

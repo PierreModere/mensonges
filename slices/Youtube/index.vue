@@ -1,49 +1,50 @@
 <template>
-  <Bounded size="widest">
-    <ul class="grid grid-cols-1 gap-16">
-      <ArticleListItem
-        v-for="article in articles"
-        :key="article.id"
-        :article="article"
+  <Bounded as="section">
+    <figure class="grid grid-cols-1 gap-4">
+      <div v-if="slice.primary.lien_youtube.url" class="aspect-w-16 aspect-h-9">
+        <iframe :src="link" frameborder="0" allowfullscreen=""></iframe>
+      </div>
+      <PrismicRichText
+        :field="slice.primary.description"
+        wrapper="figcaption"
+        class="text-center font-serif italic tracking-tight text-slate-500"
       />
-    </ul>
+    </figure>
   </Bounded>
 </template>
 
 <script>
+import { getSliceComponentProps } from "@prismicio/vue/components";
+
 export default {
-  async asyncData({ $prismic, store }) {
-    const { results: articles } = await $prismic.api.query(
-      $prismic.predicate.at("document.type", "article"),
-      {
-        orderings: `[${[
-          { field: "my.article.publishDate", direction: "desc" },
-          { field: "document.first_publication_date", direction: "desc" },
-        ]
-          .map(({ field, direction }) => `${field} ${direction}`)
-          .join(", ")}]`,
-        pageSize: 100,
+  name: "Youtube",
+  // The array passed to `getSliceComponentProps` is purely optional and acts as a visual hint for you
+  props: getSliceComponentProps(["slice", "index", "slices", "context"]),
+  computed: {
+    link() {
+      if (this.slice.primary.lien_youtube.url) {
+        const vParam = this.slice.primary.lien_youtube.url.split("v=")[1];
+        if (vParam) {
+          return `https://www.youtube.com/embed/${vParam}`;
+        } else {
+          let url = this.slice.primary.lien_youtube.url.split("/");
+          let last_part = url[url.length - 1];
+          return `https://www.youtube.com/embed/${last_part}`;
+        }
       }
-    );
-    await store.dispatch("prismic/load");
-    store.commit("layout/setWithHeaderProfile", true);
-    store.commit("layout/setWithHeaderDivider", false);
-    store.commit("layout/setWithFooterSignUpForm", true);
-    return {
-      articles,
-    };
-  },
-  head() {
-    return {
-      title: this.$prismic.asText(this.$store.state.prismic.settings.data.name),
-      link: [
-        {
-          rel: "icon",
-          type: "image/png",
-          href: this.$store.state.prismic.settings.data.favicon.url,
-        },
-      ],
-    };
+    },
   },
 };
 </script>
+
+<style scoped>
+.section {
+  background: #f7f7f7;
+  color: #111;
+  padding: 4em;
+  text-align: center;
+}
+.title {
+  margin-bottom: 2em;
+}
+</style>
