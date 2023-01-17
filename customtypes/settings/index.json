@@ -34,6 +34,17 @@
           "thumbnails": []
         }
       },
+      "favicon": {
+        "type": "Image",
+        "config": {
+          "label": "Favicon",
+          "constraint": {
+            "width": 512,
+            "height": 512
+          },
+          "thumbnails": []
+        }
+      },
       "newsletterDescription": {
         "type": "StructuredText",
         "config": {

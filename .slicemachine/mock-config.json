@@ -103,6 +103,15 @@
       "default": {
         "primary": {}
       }
+    },
+    "Youtube": {
+      "default": {
+        "primary": {
+          "lien_youtube": {
+            "content": "https://www.youtube.com/watch?v=mupsjddCat4"
+          }
+        }
+      }
     }
   }
 }
